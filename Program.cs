@@ -2,6 +2,7 @@ using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Server;
 using Microsoft.OpenApi.Models;
 using System.ComponentModel;
+using DemoApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,25 +37,6 @@ app.MapMcp();
 
 app.Run();
 
-public static class ApiLogic
-{
-    public static string GetHelloWorld() => "Hello World";
-
-    public static WeatherForecast[] GetWeatherForecast()
-    {
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-        return Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast(
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            )).ToArray();
-    }
-}
-
 // MCP: Tool type for agent-accessible functions
 [McpServerToolType]
 public static class McpApiTools
@@ -63,10 +45,7 @@ public static class McpApiTools
     public static string Hello() => ApiLogic.GetHelloWorld();
 
     [McpServerTool, Description("Returns a 5-day weather forecast with random data for demonstration purposes.")]
-    public static WeatherForecast[] WeatherForecast() => ApiLogic.GetWeatherForecast();
+    public static ApiLogic.WeatherForecast[] WeatherForecast() => ApiLogic.GetWeatherForecast();
 }
 
-public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+
