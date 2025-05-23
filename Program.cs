@@ -3,12 +3,17 @@ using ModelContextProtocol.Server;
 using Microsoft.OpenApi.Models;
 using System.ComponentModel;
 using DemoApi;
+using DemoApi.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register services
+builder.Services.AddScoped<IGreetingService, GreetingService>();
 
 // MCP: Register MCP server for agent integration with HTTP transport and tool discovery
 builder.Services.AddMcpServer()
@@ -31,6 +36,8 @@ api.MapGet("/weatherforecast", () => ApiLogic.GetWeatherForecast())
     .WithName("GetWeatherForecast");
 
 api.MapGet("/hello", () => ApiLogic.GetHelloWorld());
+
+api.MapGet("/greeting", (IGreetingService greetingService) => greetingService.GetServiceGreeting());
 
 // MCP: Expose the MCP negotiation endpoint (default is /sse for this SDK version)
 app.MapMcp();
