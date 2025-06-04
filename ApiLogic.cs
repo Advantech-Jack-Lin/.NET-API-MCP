@@ -20,7 +20,9 @@ public static class ApiLogic
 
     public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
     {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        // Use the standard conversion formula rather than an approximation to
+        // avoid rounding errors when converting from Celsius to Fahrenheit.
+        public int TemperatureF => 32 + (int)(TemperatureC * 9.0 / 5.0);
     }
 }
 
